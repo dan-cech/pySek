@@ -4,6 +4,7 @@ import time
 pg.init()
 width, height = 800, 600
 screen = pg.display.set_mode((width, height))
+pg.display.set_caption("Pisek")
 
 CELL_SIZE = 8
 cols = width // CELL_SIZE
@@ -27,7 +28,6 @@ while running:
     if isPressed:
         mouseX //= CELL_SIZE
         mouseY //= CELL_SIZE
-        print(mouseX, mouseY)
 
         if mouseX >= 0 and mouseY >= 0 and mouseX < cols and mouseY < rows:
             grid[mouseY][mouseX] = 1
