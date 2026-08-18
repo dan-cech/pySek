@@ -1,5 +1,6 @@
 import pygame as pg
 import time
+import random
 
 pg.init()
 width, height = 800, 600
@@ -91,17 +92,20 @@ while running:
                         grid[row+1][col+1] = 2
                         moved[row+1][col+1] = True
                         pg.draw.rect(screen, color_water, (col*8, row*8, CELL_SIZE, CELL_SIZE))
-                    # right
-                    elif row + 1 < rows and col + 1 < cols and grid[row][col+1] == 0:
-                        grid[row][col] = 0
-                        grid[row][col+1] = 2
-                        moved[row][col+1] = True
-                        pg.draw.rect(screen, color_water, (col*8, row*8, CELL_SIZE, CELL_SIZE))
-                    # left
-                    elif row + 1 < rows and col - 1 >= 0 and grid[row][col-1] == 0:
-                        grid[row][col] = 0
-                        grid[row][col-1] = 2
-                        moved[row][col-1] = True
+                    # horizontal spread (random order so it doesn't always favor one side)
+                    elif row + 1 < rows and (
+                        (col + 1 < cols and grid[row][col+1] == 0) or
+                        (col - 1 >= 0 and grid[row][col-1] == 0)
+                    ):
+                        dirs = [1, -1]
+                        random.shuffle(dirs)
+                        for d in dirs:
+                            nc = col + d
+                            if 0 <= nc < cols and grid[row][nc] == 0:
+                                grid[row][col] = 0
+                                grid[row][nc] = 2
+                                moved[row][nc] = True
+                                break
                         pg.draw.rect(screen, color_water, (col*8, row*8, CELL_SIZE, CELL_SIZE))
                     # idle
                     else: pg.draw.rect(screen, color_water, (col*8, row*8, CELL_SIZE, CELL_SIZE))
