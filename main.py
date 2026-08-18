@@ -17,10 +17,13 @@ color_stone = (80, 80, 80)
 
 # initializng the grid
 grid = [[0 for _ in range(cols)] for _ in range(rows)]
-materialList = ["sand", "stone"]
+moved = [[False for _ in range(cols)] for _ in range(rows)]
+
+materialList = ["sand", "stone", "water"]
 material = "sand"
 
 running = True
+
 while running:
     for event in pg.event.get():
         if event.type == pg.QUIT:
@@ -32,9 +35,11 @@ while running:
 
     if isPressed2:
         if material == "sand": material = "stone"
-        elif material == "stone": material = "sand"
+        elif material == "stone": material = "water"
+        elif material == "water": material = "sand"
 
     screen.fill((30,30,30))
+    moved = [[False for _ in range(cols)] for _ in range(rows)]
     if isPressed:
         mouseX //= CELL_SIZE
         mouseY //= CELL_SIZE
@@ -69,32 +74,44 @@ while running:
 
                 else: pg.draw.rect(screen, color_sand, (col*8, row*8, CELL_SIZE, CELL_SIZE))
 
-            # water
+            # water - claude potahal dekuju :)
             if cell == 2:
-                # below empty
-                if row + 1 < rows and grid[row+1][col] == 0:
-                    grid[row][col] = 0
-                    grid[row+1][col] = 2
-                    pg.draw.rect(screen, color_water, (col*8, row*8, CELL_SIZE, CELL_SIZE))
-                # right-down    
-                elif row + 1 < rows and col + 1 < cols and grid[row+1][col+1] == 0:
-                    grid[row][col] = 0
-                    grid[row+1][col+1] = 2
-                    pg.draw.rect(screen, color_water, (col*8, row*8, CELL_SIZE, CELL_SIZE))
-                # right
-                elif row + 1 < rows and col + 1 < cols and grid[row][col+1] != 2:
-                    grid[row][col] = 0
-                    grid[row][col+1] = 2
-                    pg.draw.rect(screen, color_water, (col*8, row*8, CELL_SIZE, CELL_SIZE))
-                # left
-                elif row + 1 < rows and col - 1 >= 0 and grid[row+1][col-1] == 0:
-                    grid[row][col] = 0
-                    grid[row+1][col-1] = 2
-                    pg.draw.rect(screen, color_water, (col*8, row*8, CELL_SIZE, CELL_SIZE))
-            
-                else: pg.draw.rect(screen, color_water, (col*8, row*8, CELL_SIZE, CELL_SIZE))
+                if moved[row][col] == False:
+                    
 
-            # stone
+                    # below empty
+                    if row + 1 < rows and grid[row+1][col] == 0:
+                        grid[row][col] = 0
+                        grid[row+1][col] = 2
+                        moved[row+1][col] = True
+                        pg.draw.rect(screen, color_water, (col*8, row*8, CELL_SIZE, CELL_SIZE))
+                    # right-down    
+                    elif row + 1 < rows and col + 1 < cols and grid[row+1][col+1] == 0:
+                        grid[row][col] = 0
+                        grid[row+1][col+1] = 2
+                        moved[row+1][col+1] = True
+                        pg.draw.rect(screen, color_water, (col*8, row*8, CELL_SIZE, CELL_SIZE))
+                    # right
+                    elif row + 1 < rows and col + 1 < cols and grid[row][col+1] == 0:
+                        grid[row][col] = 0
+                        grid[row][col+1] = 2
+                        moved[row][col+1] = True
+                        pg.draw.rect(screen, color_water, (col*8, row*8, CELL_SIZE, CELL_SIZE))
+                    # left
+                    elif row + 1 < rows and col - 1 >= 0 and grid[row][col-1] == 0:
+                        grid[row][col] = 0
+                        grid[row][col-1] = 2
+                        moved[row][col-1] = True
+                        pg.draw.rect(screen, color_water, (col*8, row*8, CELL_SIZE, CELL_SIZE))
+                    # idle
+                    else: pg.draw.rect(screen, color_water, (col*8, row*8, CELL_SIZE, CELL_SIZE))
+
+                else:
+                    moved[row][col] = False
+                    pg.draw.rect(screen, color_water, (col*8, row*8, CELL_SIZE, CELL_SIZE))
+
+
+            # stone (wow)
             if cell == 3: pg.draw.rect(screen, color_stone, (col*8, row*8, CELL_SIZE, CELL_SIZE))
             
 
